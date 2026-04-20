@@ -42,14 +42,21 @@ public_users.get('/isbn/:isbn',function (req, res) {
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  let author = req.params.author;
-  let booksByAuthor = Object.entries(books).filter(([isbn, book]) => book.author == author).reduce((result, [isbn, book]) => {
-    result[isbn] = book;
-    return result;
-  }, {});
+    const author = req.params.author;
 
-  return res.send(booksByAuthor);
+    Promise.resolve()
+      .then(() => {
+        const booksByAuthor = Object.entries(books)
+          .filter(([isbn, book]) => book.author === author)
+          .reduce((result, [isbn, book]) => {
+            result[isbn] = book;
+            return result;
+          }, {});
+  
+        return booksByAuthor;
+      })
+      .then(data => res.send(data))
+      .catch(err => res.status(500).send(err));
 });
 
 // Get all books based on title
