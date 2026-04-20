@@ -61,13 +61,21 @@ public_users.get('/author/:author',function (req, res) {
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  let title = req.params.title;
-  let booksByTitle = Object.entries(books).filter(([isbn, book]) => book.title == title).reduce((result, [isbn, book]) => {
-    result[isbn] = book;
-    return result;
-  }, {});
-  return res.send(booksByTitle);
+    const title = req.params.title;
+
+    Promise.resolve()
+      .then(() => {
+        const booksByTitle = Object.entries(books)
+          .filter(([isbn, book]) => book.title === title)
+          .reduce((result, [isbn, book]) => {
+            result[isbn] = book;
+            return result;
+          }, {});
+  
+        return booksByTitle;
+      })
+      .then(data => res.send(data))
+      .catch(err => res.status(500).send(err));
 });
 
 //  Get book review
